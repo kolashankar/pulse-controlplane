@@ -56,7 +56,7 @@ func (h *StatusHandler) GetProjectHealth(c *gin.Context) {
 func (h *StatusHandler) GetRegionAvailability(c *gin.Context) {
 	regions, err := h.statusService.GetRegionAvailability(c.Request.Context())
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

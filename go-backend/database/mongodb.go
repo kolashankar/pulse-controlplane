@@ -152,3 +152,8 @@ func createIndexes(ctx context.Context) error {
 func GetCollection(name string) *mongo.Collection {
 	return Database.Collection(name)
 }
+
+// GetDB returns the MongoDB database instance
+func GetDB() *mongo.Database {
+	return Database
+}

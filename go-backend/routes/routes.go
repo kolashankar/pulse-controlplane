@@ -205,6 +205,45 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 			v1.GET("/status", statusHandler.GetSystemStatus)
 			v1.GET("/status/projects/:id", statusHandler.GetProjectHealth)
 			v1.GET("/status/regions", statusHandler.GetRegionAvailability)
+
+			// ======= Phase 8: Advanced Features =======
+
+			// Region Management routes (Phase 8.1: Multi-Region Support)
+			regions := v1.Group("/regions")
+			{
+				regions.GET("", regionHandler.GetAllRegions)
+				regions.GET("/health", regionHandler.GetAllRegionHealth)
+				regions.GET("/stats", regionHandler.GetRegionStats)
+				regions.POST("/nearest", regionHandler.FindNearestRegion)
+				regions.GET("/:code", regionHandler.GetRegionByCode)
+				regions.GET("/:code/health", regionHandler.GetRegionHealth)
+			}
+
+			// Analytics routes (Phase 8.2: Advanced Analytics)
+			analytics := v1.Group("/analytics")
+			analytics.Use(middleware.AuthenticateProject())
+			analytics.Use(middleware.ProjectRateLimiter())
+			{
+				// Custom metrics
+				analytics.POST("/metrics/custom", analyticsHandler.CreateCustomMetric)
+				analytics.GET("/metrics/custom/:project_id", analyticsHandler.GetCustomMetrics)
+
+				// Alerts
+				analytics.POST("/alerts", analyticsHandler.CreateAlert)
+				analytics.GET("/alerts/:project_id", analyticsHandler.GetAlerts)
+				analytics.POST("/alerts/:project_id/check", analyticsHandler.CheckAlerts)
+				analytics.GET("/triggers/:project_id", analyticsHandler.GetRecentTriggers)
+
+				// Real-time dashboard
+				analytics.GET("/realtime/:project_id", analyticsHandler.GetRealTimeDashboard)
+
+				// Export
+				analytics.POST("/export/:project_id", analyticsHandler.ExportAnalytics)
+				analytics.GET("/export/status/:export_id", analyticsHandler.GetExportStatus)
+
+				// Forecast
+				analytics.GET("/forecast/:project_id", analyticsHandler.ForecastUsage)
+			}
 		}
 	} // Close api group
 

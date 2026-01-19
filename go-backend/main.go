@@ -12,6 +12,7 @@ import (
 	"pulse-control-plane/config"
 	"pulse-control-plane/database"
 	"pulse-control-plane/routes"
+	"pulse-control-plane/services"
 	"pulse-control-plane/utils"
 
 	"github.com/gin-gonic/gin"

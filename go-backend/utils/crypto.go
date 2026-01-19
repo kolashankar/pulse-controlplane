@@ -72,3 +72,12 @@ func HashPassword(password string) (string, error) {
 func VerifyPassword(hashedPassword, plainPassword string) error {
 	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(plainPassword))
 }
+
+// GenerateRandomString generates a random alphanumeric string
+func GenerateRandomString(length int) string {
+	bytes := make([]byte, length)
+	if _, err := rand.Read(bytes); err != nil {
+		return ""
+	}
+	return hex.EncodeToString(bytes)[:length]
+}

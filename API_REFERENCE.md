@@ -622,5 +622,378 @@ For issues or questions:
 
 ---
 
+## Phase 5: Admin Dashboard Features
+
+### Team Management
+
+#### List Team Members
+```http
+GET /v1/organizations/:id/members?page=1&limit=20
+```
+
+**Response (200 OK):**
+```json
+{
+  "members": [
+    {
+      "id": "60d5ec49f1b2c8b4f8a1b2c5",
+      "email": "john@acme.com",
+      "name": "John Doe",
+      "role": "Admin",
+      "status": "Active",
+      "joined_at": "2025-01-15T10:00:00Z",
+      "last_active_at": "2025-01-19T12:00:00Z",
+      "created_at": "2025-01-15T10:00:00Z"
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "limit": 20
+}
+```
+
+---
+
+#### Invite Team Member
+```http
+POST /v1/organizations/:id/members
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "email": "jane@acme.com",
+  "name": "Jane Smith",
+  "role": "Developer"
+}
+```
+
+**Validation:**
+- `role`: one of `Admin`, `Developer`, `Viewer` (cannot invite as `Owner`)
+
+**Response (201 Created):**
+```json
+{
+  "message": "Team member invited successfully",
+  "invitation": {
+    "id": "60d5ec49f1b2c8b4f8a1b2c6",
+    "email": "jane@acme.com",
+    "name": "Jane Smith",
+    "role": "Developer",
+    "status": "Pending",
+    "expires_at": "2025-01-26T12:00:00Z",
+    "created_at": "2025-01-19T12:00:00Z"
+  },
+  "invite_url": "https://pulse.io/invite?token=abc123xyz456..."
+}
+```
+
+---
+
+#### Accept Invitation
+```http
+POST /v1/invitations/accept
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "token": "abc123xyz456..."
+}
+```
+
+**Response (200 OK):**
+```json
+{
+  "message": "Invitation accepted successfully",
+  "member": {
+    "id": "60d5ec49f1b2c8b4f8a1b2c7",
+    "email": "jane@acme.com",
+    "name": "Jane Smith",
+    "role": "Developer",
+    "status": "Active",
+    "joined_at": "2025-01-19T12:30:00Z",
+    "created_at": "2025-01-19T12:30:00Z"
+  }
+}
+```
+
+---
+
+#### Remove Team Member
+```http
+DELETE /v1/organizations/:id/members/:user_id
+```
+
+**Note:** Cannot remove the organization owner.
+
+**Response (200 OK):**
+```json
+{
+  "message": "Team member removed successfully"
+}
+```
+
+---
+
+#### Update Team Member Role
+```http
+PUT /v1/organizations/:id/members/:user_id/role
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "role": "Admin"
+}
+```
+
+**Note:** Cannot change owner's role.
+
+**Response (200 OK):**
+```json
+{
+  "message": "Team member role updated successfully",
+  "member": {
+    "id": "60d5ec49f1b2c8b4f8a1b2c7",
+    "email": "jane@acme.com",
+    "name": "Jane Smith",
+    "role": "Admin",
+    "status": "Active",
+    ...
+  }
+}
+```
+
+---
+
+### Audit Logs
+
+#### Get Audit Logs
+```http
+GET /v1/audit-logs?org_id=xxx&page=1&limit=50&action=project.created&start_date=2025-01-01T00:00:00Z&end_date=2025-01-31T23:59:59Z
+```
+
+**Query Parameters:**
+- `org_id`: Filter by organization (required)
+- `user_email`: Filter by user email
+- `action`: Filter by action type
+- `resource`: Filter by resource type
+- `resource_id`: Filter by resource ID
+- `status`: Filter by status (Success/Failed)
+- `start_date`: Start date (ISO 8601)
+- `end_date`: End date (ISO 8601)
+- `page`: Page number (default: 1)
+- `limit`: Items per page (default: 50, max: 100)
+
+**Response (200 OK):**
+```json
+{
+  "logs": [
+    {
+      "id": "60d5ec49f1b2c8b4f8a1b2c8",
+      "user_email": "admin@acme.com",
+      "action": "project.created",
+      "resource": "project",
+      "resource_id": "60d5ec49f1b2c8b4f8a1b2c4",
+      "resource_name": "My Video App",
+      "ip_address": "203.0.113.42",
+      "status": "Success",
+      "details": {
+        "method": "POST",
+        "path": "/v1/projects",
+        "status_code": 201,
+        "duration_ms": 150
+      },
+      "timestamp": "2025-01-19T12:00:00Z"
+    }
+  ],
+  "total": 125,
+  "page": 1,
+  "limit": 50
+}
+```
+
+---
+
+#### Export Audit Logs (CSV)
+```http
+GET /v1/audit-logs/export?org_id=xxx&start_date=2025-01-01T00:00:00Z
+```
+
+**Response (200 OK):**
+```csv
+ID,Timestamp,User Email,Action,Resource,Resource ID,Resource Name,IP Address,Status
+60d5ec49...,2025-01-19T12:00:00Z,admin@acme.com,project.created,project,60d5ec49...,My Video App,203.0.113.42,Success
+```
+
+**Content-Type:** `text/csv`  
+**Content-Disposition:** `attachment; filename=audit_logs_2025-01-19_12-00-00.csv`
+
+---
+
+#### Get Audit Statistics
+```http
+GET /v1/audit-logs/stats?org_id=xxx&days=30
+```
+
+**Response (200 OK):**
+```json
+{
+  "total_actions": 1250,
+  "failed_actions": 25,
+  "success_rate": 98.0,
+  "top_actions": [
+    { "_id": "project.updated", "count": 342 },
+    { "_id": "api_key.regenerated", "count": 125 },
+    { "_id": "team_member.invited", "count": 87 }
+  ],
+  "top_users": [
+    { "_id": "admin@acme.com", "count": 542 },
+    { "_id": "dev@acme.com", "count": 320 }
+  ],
+  "period_days": 30,
+  "start_date": "2024-12-20T00:00:00Z",
+  "end_date": "2025-01-19T12:00:00Z"
+}
+```
+
+---
+
+### Status & Monitoring
+
+#### Get System Status
+```http
+GET /v1/status
+```
+
+**Response (200 OK):**
+```json
+{
+  "status": "Operational",
+  "version": "1.0.0",
+  "uptime": "2h45m30s",
+  "database": {
+    "status": "Up",
+    "response_time_ms": 15,
+    "last_checked": "2025-01-19T12:00:00Z",
+    "message": "Database is operational"
+  },
+  "api": {
+    "status": "Up",
+    "response_time_ms": 0,
+    "last_checked": "2025-01-19T12:00:00Z",
+    "message": "API is operational"
+  },
+  "livekit": {
+    "status": "Up",
+    "response_time_ms": 25,
+    "last_checked": "2025-01-19T12:00:00Z",
+    "message": "LiveKit servers operational"
+  },
+  "regions": [
+    {
+      "region": "us-east",
+      "status": "Up",
+      "latency_ms": 35,
+      "last_checked": "2025-01-19T12:00:00Z",
+      "active_rooms": 0,
+      "message": "Region us-east is operational"
+    }
+  ],
+  "last_checked": "2025-01-19T12:00:00Z",
+  "active_projects": 42,
+  "metadata": {
+    "environment": "production",
+    "go_version": "1.21+"
+  }
+}
+```
+
+---
+
+#### Get Project Health
+```http
+GET /v1/status/projects/:id
+```
+
+**Response (200 OK):**
+```json
+{
+  "project_id": "60d5ec49f1b2c8b4f8a1b2c4",
+  "project_name": "My Video App",
+  "status": "Healthy",
+  "region": "us-east",
+  "active_rooms": 0,
+  "active_participants": 0,
+  "api_key_valid": true,
+  "webhook_configured": true,
+  "last_activity": "2025-01-19T11:30:00Z",
+  "issues": [],
+  "metrics": {
+    "created_at": "2025-01-01T00:00:00Z",
+    "updated_at": "2025-01-19T11:30:00Z"
+  }
+}
+```
+
+**Status Values:**
+- `Healthy` - All checks passed
+- `Warning` - Some issues detected (webhook not configured, etc.)
+- `Critical` - Major issues (API key invalid, etc.)
+
+---
+
+#### Get Region Availability
+```http
+GET /v1/status/regions
+```
+
+**Response (200 OK):**
+```json
+{
+  "regions": [
+    {
+      "region": "us-east",
+      "status": "Up",
+      "latency_ms": 35,
+      "last_checked": "2025-01-19T12:00:00Z",
+      "active_rooms": 0,
+      "message": "Region us-east is operational"
+    },
+    {
+      "region": "us-west",
+      "status": "Up",
+      "latency_ms": 42,
+      "last_checked": "2025-01-19T12:00:00Z",
+      "active_rooms": 0,
+      "message": "Region us-west is operational"
+    },
+    {
+      "region": "eu-west",
+      "status": "Up",
+      "latency_ms": 68,
+      "last_checked": "2025-01-19T12:00:00Z",
+      "active_rooms": 0,
+      "message": "Region eu-west is operational"
+    },
+    {
+      "region": "asia-south",
+      "status": "Up",
+      "latency_ms": 125,
+      "last_checked": "2025-01-19T12:00:00Z",
+      "active_rooms": 0,
+      "message": "Region asia-south is operational"
+    }
+  ],
+  "total": 4
+}
+```
+
+---
+
 *API Version: 1.0.0*  
-*Last Updated: 2025-01-19*
+*Last Updated: 2025-01-19 (Phase 5 Complete)*

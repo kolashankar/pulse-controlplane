@@ -18,6 +18,9 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
         // Apply rate limiting middleware
         router.Use(middleware.GlobalRateLimiter())
 
+        // Apply audit logging middleware
+        router.Use(middleware.AuditMiddleware())
+
         // Initialize handlers
         organizationHandler := handlers.NewOrganizationHandler()
         projectHandler := handlers.NewProjectHandler()
@@ -27,6 +30,9 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
         webhookHandler := handlers.NewWebhookHandler()
         usageHandler := handlers.NewUsageHandler(cfg.UsageService, cfg.AggregatorService)
         billingHandler := handlers.NewBillingHandler(cfg.BillingService)
+        teamHandler := handlers.NewTeamHandler()
+        auditHandler := handlers.NewAuditHandler()
+        statusHandler := handlers.NewStatusHandler()
 
         // Health check endpoint (no auth required)
         router.GET("/health", func(c *gin.Context) {

@@ -14,11 +14,25 @@ import (
 
 // SetupRoutes configures all API routes
 func SetupRoutes(router *gin.Engine, cfg *config.Config) {
+	// Apply security headers middleware
+	router.Use(middleware.SecurityHeaders())
+
 	// Apply CORS middleware
 	router.Use(middleware.CORSMiddleware(cfg))
 
+	// Apply HTTPS enforcement (production only)
+	if cfg.Environment == "production" {
+		router.Use(middleware.EnforceHTTPS())
+	}
+
 	// Apply rate limiting middleware
 	router.Use(middleware.GlobalRateLimiter())
+
+	// Apply request validation middleware
+	router.Use(middleware.ValidateRequest())
+
+	// Apply XSS protection middleware
+	router.Use(middleware.PreventXSS())
 
 	// Apply audit logging middleware
 	router.Use(middleware.AuditMiddleware())

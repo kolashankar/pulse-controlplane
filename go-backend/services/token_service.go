@@ -84,6 +84,35 @@ func (s *TokenService) CreateToken(ctx context.Context, projectID primitive.Obje
 		return nil, errors.New("video/audio features are not enabled for this project")
 	}
 
+	// Determine best region for this connection
+	selectedRegion := project.Region // Default to project's region
+	var fallbackURLs []string
+
+	// If region service is available and client provided location info
+	if req.PreferredRegion != "" || req.ClientIP != "" {
+		regionReq := &models.NearestRegionRequest{
+			ClientIP:   req.ClientIP,
+			Preference: req.PreferredRegion,
+		}
+
+		nearestRegion, err := s.regionService.FindNearestRegion(ctx, regionReq)
+		if err == nil && nearestRegion.PrimaryRegion != nil {
+			selectedRegion = nearestRegion.PrimaryRegion.Code
+			project.LiveKitURL = nearestRegion.RecommendedURL
+
+			// Add fallback URLs
+			for _, fallback := range nearestRegion.FallbackRegions {
+				fallbackURLs = append(fallbackURLs, fallback.LiveKitURL)
+			}
+
+			log.Info().
+				Str("project_id", projectID.Hex()).
+				Str("selected_region", selectedRegion).
+				Int("fallbacks", len(fallbackURLs)).
+				Msg("Region-aware routing applied")
+		}
+	}
+
 	// Create token with permissions
 	token, expiresAt, err := s.generateLiveKitToken(project, req)
 	if err != nil {
@@ -95,15 +124,18 @@ func (s *TokenService) CreateToken(ctx context.Context, projectID primitive.Obje
 		Str("project_id", projectID.Hex()).
 		Str("room", req.RoomName).
 		Str("participant", req.Participant).
+		Str("region", selectedRegion).
 		Msg("Token created")
 
 	return &TokenResponse{
-		Token:       token,
-		ServerURL:   project.LiveKitURL,
-		ExpiresAt:   expiresAt,
-		ProjectID:   projectID.Hex(),
-		RoomName:    req.RoomName,
-		Participant: req.Participant,
+		Token:        token,
+		ServerURL:    project.LiveKitURL,
+		ExpiresAt:    expiresAt,
+		ProjectID:    projectID.Hex(),
+		RoomName:     req.RoomName,
+		Participant:  req.Participant,
+		Region:       selectedRegion,
+		FallbackURLs: fallbackURLs,
 	}, nil
 }
 

@@ -55,6 +55,8 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	teamHandler := handlers.NewTeamHandler()
 	auditHandler := handlers.NewAuditHandler()
 	statusHandler := handlers.NewStatusHandler()
+	regionHandler := handlers.NewRegionHandler()
+	analyticsHandler := handlers.NewAnalyticsHandler()
 
 	// Health check endpoint (no auth required)
 	router.GET("/health", func(c *gin.Context) {

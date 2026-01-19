@@ -161,18 +161,9 @@ func (h *WebhookHandler) handleParticipantJoined(c *gin.Context, payload map[str
 	projectIDStr, _ := payload["project_id"].(string)
 	roomName, _ := payload["room_name"].(string)
 	
-	// Create webhook payload
-	webhookPayload := &models.WebhookPayload{
-		Event:     models.WebhookEventParticipantJoined,
-		Timestamp: time.Now().Unix(),
-		ProjectID: projectIDStr,
-		RoomName:  roomName,
-		Metadata:  payload,
-	}
-	
 	// Forward to customer webhook
 	// Note: You would need to get the project from DB first
-	log.Info().Str("event", "participant_joined").Str("room", roomName).Msg("Participant joined")
+	log.Info().Str("event", "participant_joined").Str("room", roomName).Str("project_id", projectIDStr).Msg("Participant joined")
 }
 
 // handleParticipantLeft processes participant left event

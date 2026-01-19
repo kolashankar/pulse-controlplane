@@ -166,7 +166,7 @@ const Team = () => {
                   </SelectContent>
                 </Select>
               </div>
-            </DialogHeader>
+            </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsInviteOpen(false)}>
                 Cancel

@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
-)
 
 // WebhookHandler handles webhook-related HTTP requests
 type WebhookHandler struct {

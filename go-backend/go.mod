@@ -7,6 +7,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/joho/godotenv v1.5.1
 	github.com/rs/zerolog v1.31.0
+	github.com/stretchr/testify v1.9.0
 	go.mongodb.org/mongo-driver v1.13.1
 	golang.org/x/crypto v0.23.0
 )

@@ -116,13 +116,31 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
                         webhooks.GET("/logs", middleware.AuthenticateProject(), webhookHandler.GetWebhookLogs)
                 }
 
-                // ======= Phase 4: Usage Tracking (Placeholder) =======
-                // usage := v1.Group("/usage")
-                // usage.Use(middleware.AuthenticateProject())
-                // {
-                //      usage.GET("/:project_id", handlers.GetUsageMetrics)
-                //      usage.GET("/:project_id/summary", handlers.GetUsageSummary)
-                // }
+                // ======= Phase 4: Usage Tracking & Billing =======
+                
+                // Usage routes (requires API key authentication)
+                usage := v1.Group("/usage")
+                usage.Use(middleware.AuthenticateProject())
+                usage.Use(middleware.ProjectRateLimiter())
+                {
+                        usage.GET("/:project_id", usageHandler.GetUsageMetrics)
+                        usage.GET("/:project_id/summary", usageHandler.GetUsageSummary)
+                        usage.GET("/:project_id/detailed", usageHandler.GetDetailedUsage)
+                        usage.POST("/:project_id/reset", usageHandler.ResetUsageMetrics)
+                }
+
+                // Billing routes (requires API key authentication)
+                billing := v1.Group("/billing")
+                billing.Use(middleware.AuthenticateProject())
+                billing.Use(middleware.ProjectRateLimiter())
+                {
+                        billing.GET("/:project_id/invoice", billingHandler.GetInvoice)
+                        billing.GET("/:project_id/invoices", billingHandler.ListInvoices)
+                        billing.POST("/:project_id/invoice/generate", billingHandler.GenerateInvoice)
+                        billing.GET("/:project_id/costs", billingHandler.GetCostBreakdown)
+                        billing.PUT("/:project_id/billing-info", billingHandler.UpdateBillingInfo)
+                        billing.GET("/:project_id/billing-info", billingHandler.GetBillingInfo)
+                }
         }
 
         // 404 handler

@@ -237,7 +237,7 @@ func (h *UsageHandler) GetAlerts(c *gin.Context) {
 // POST /v1/usage/:project_id/check-limits
 func (h *UsageHandler) CheckLimits(c *gin.Context) {
 	projectIDStr := c.Param("project_id")
-	projectID, err := primitive.ObjectIDFromHex(projectIDStr)
+	_, err := primitive.ObjectIDFromHex(projectIDStr)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid project ID"})
 		return

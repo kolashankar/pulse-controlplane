@@ -15,6 +15,17 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	// Apply CORS middleware
 	router.Use(middleware.CORSMiddleware(cfg))
 
+	// Apply rate limiting middleware
+	router.Use(middleware.GlobalRateLimiter())
+
+	// Initialize handlers
+	organizationHandler := handlers.NewOrganizationHandler()
+	projectHandler := handlers.NewProjectHandler()
+	tokenHandler := handlers.NewTokenHandler(cfg)
+	egressHandler := handlers.NewEgressHandler()
+	ingressHandler := handlers.NewIngressHandler()
+	webhookHandler := handlers.NewWebhookHandler()
+
 	// Health check endpoint (no auth required)
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{
@@ -35,61 +46,75 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 			})
 		})
 
-		// Organization routes (will be implemented in Phase 2)
-		// organizations := v1.Group("/organizations")
-		// {
-		// 	organizations.POST("", handlers.CreateOrganization)
-		// 	organizations.GET("", handlers.ListOrganizations)
-		// 	organizations.GET("/:id", handlers.GetOrganization)
-		// 	organizations.PUT("/:id", handlers.UpdateOrganization)
-		// 	organizations.DELETE("/:id", handlers.DeleteOrganization)
-		// }
+		// ======= Phase 2: Core Control Plane APIs =======
 
-		// Project routes (will be implemented in Phase 2)
-		// projects := v1.Group("/projects")
-		// {
-		// 	projects.POST("", handlers.CreateProject)
-		// 	projects.GET("", handlers.ListProjects)
-		// 	projects.GET("/:id", handlers.GetProject)
-		// 	projects.PUT("/:id", handlers.UpdateProject)
-		// 	projects.DELETE("/:id", handlers.DeleteProject)
-		// 	projects.POST("/:id/regenerate-keys", handlers.RegenerateAPIKeys)
-		// }
+		// Organization routes
+		organizations := v1.Group("/organizations")
+		{
+			organizations.POST("", organizationHandler.CreateOrganization)
+			organizations.GET("", organizationHandler.ListOrganizations)
+			organizations.GET("/:id", organizationHandler.GetOrganization)
+			organizations.PUT("/:id", organizationHandler.UpdateOrganization)
+			organizations.DELETE("/:id", organizationHandler.DeleteOrganization)
+		}
 
-		// Token routes (will be implemented in Phase 2)
-		// Requires API key authentication
-		// tokens := v1.Group("/tokens")
-		// tokens.Use(middleware.AuthenticateProject())
-		// {
-		// 	tokens.POST("/create", handlers.CreateToken)
-		// 	tokens.POST("/validate", handlers.ValidateToken)
-		// }
+		// Project routes
+		projects := v1.Group("/projects")
+		{
+			projects.POST("", projectHandler.CreateProject)
+			projects.GET("", projectHandler.ListProjects)
+			projects.GET("/:id", projectHandler.GetProject)
+			projects.PUT("/:id", projectHandler.UpdateProject)
+			projects.DELETE("/:id", projectHandler.DeleteProject)
+			projects.POST("/:id/regenerate-keys", projectHandler.RegenerateAPIKeys)
+		}
 
-		// Media routes (will be implemented in Phase 3)
-		// media := v1.Group("/media")
-		// media.Use(middleware.AuthenticateProject())
-		// {
-		// 	egress := media.Group("/egress")
-		// 	{
-		// 		egress.POST("/start", handlers.StartEgress)
-		// 		egress.POST("/stop", handlers.StopEgress)
-		// 		egress.GET("/:id", handlers.GetEgressStatus)
-		// 	}
+		// Token routes (requires API key authentication)
+		tokens := v1.Group("/tokens")
+		tokens.Use(middleware.AuthenticateProject())
+		tokens.Use(middleware.ProjectRateLimiter())
+		{
+			tokens.POST("/create", tokenHandler.CreateToken)
+			tokens.POST("/validate", tokenHandler.ValidateToken)
+		}
 
-		// 	ingress := media.Group("/ingress")
-		// 	{
-		// 		ingress.POST("/create", handlers.CreateIngress)
-		// 		ingress.DELETE("/:id", handlers.DeleteIngress)
-		// 	}
-		// }
+		// ======= Phase 3: Media Control & Scaling =======
 
-		// Webhook routes (will be implemented in Phase 3)
-		// webhooks := v1.Group("/webhooks")
-		// {
-		// 	webhooks.POST("/internal", handlers.HandleSystemWebhook)
-		// }
+		// Media routes (requires API key authentication)
+		media := v1.Group("/media")
+		media.Use(middleware.AuthenticateProject())
+		media.Use(middleware.ProjectRateLimiter())
+		{
+			// Egress routes
+			egress := media.Group("/egress")
+			{
+				egress.POST("/start", egressHandler.StartEgress)
+				egress.POST("/stop", egressHandler.StopEgress)
+				egress.GET("/:id", egressHandler.GetEgress)
+				egress.GET("", egressHandler.ListEgresses)
+			}
 
-		// Usage routes (will be implemented in Phase 4)
+			// Ingress routes
+			ingress := media.Group("/ingress")
+			{
+				ingress.POST("/create", ingressHandler.CreateIngress)
+				ingress.GET("/:id", ingressHandler.GetIngress)
+				ingress.GET("", ingressHandler.ListIngresses)
+				ingress.DELETE("/:id", ingressHandler.DeleteIngress)
+			}
+		}
+
+		// Webhook routes
+		webhooks := v1.Group("/webhooks")
+		{
+			// Internal webhook endpoint (receives webhooks from LiveKit)
+			webhooks.POST("/livekit", webhookHandler.HandleLiveKitWebhook)
+			
+			// Webhook logs (requires authentication)
+			webhooks.GET("/logs", middleware.AuthenticateProject(), webhookHandler.GetWebhookLogs)
+		}
+
+		// ======= Phase 4: Usage Tracking (Placeholder) =======
 		// usage := v1.Group("/usage")
 		// usage.Use(middleware.AuthenticateProject())
 		// {

@@ -126,14 +126,6 @@ func (s *UsageService) GetUsageMetrics(ctx context.Context, projectID primitive.
 func (s *UsageService) GetUsageSummary(ctx context.Context, projectID primitive.ObjectID, startDate, endDate time.Time) (*models.UsageSummary, error) {
 	collection := s.db.Collection(models.UsageMetric{}.TableName())
 
-	filter := bson.M{
-		"project_id": projectID,
-		"timestamp": bson.M{
-			"$gte": startDate,
-			"$lte": endDate,
-		},
-	}
-
 	summary := &models.UsageSummary{
 		ProjectID: projectID.Hex(),
 		StartDate: startDate,

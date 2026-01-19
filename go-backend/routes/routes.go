@@ -6,6 +6,7 @@ import (
         "pulse-control-plane/config"
         "pulse-control-plane/handlers"
         "pulse-control-plane/middleware"
+        "pulse-control-plane/services"
 
         "github.com/gin-gonic/gin"
 )

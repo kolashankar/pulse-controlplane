@@ -174,11 +174,7 @@ func (s *EgressService) ListEgresses(ctx context.Context, projectID primitive.Ob
 	
 	// Find with pagination
 	cursor, err := s.collection.Find(ctx, filter, 
-		&mongo.Options{
-			Skip: &skip,
-			Limit: &limit,
-			Sort: bson.M{"created_at": -1},
-		},
+		options.Find().SetSkip(int64(skip)).SetLimit(int64(limit)).SetSort(bson.M{"created_at": -1}),
 	)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to list egresses: %w", err)

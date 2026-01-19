@@ -41,6 +41,8 @@ type TokenRequest struct {
 	CanPublish   bool              `json:"can_publish"`
 	CanSubscribe bool              `json:"can_subscribe"`
 	Metadata     map[string]string `json:"metadata"`
+	ClientIP     string            `json:"client_ip"`     // Optional: for region selection
+	PreferredRegion string         `json:"preferred_region"` // Optional: user preference
 }
 
 // TokenResponse represents the token creation response
@@ -51,11 +53,14 @@ type TokenResponse struct {
 	ProjectID  string    `json:"project_id"`
 	RoomName   string    `json:"room_name"`
 	Participant string   `json:"participant_name"`
+	Region     string    `json:"region"`      // Selected region
+	FallbackURLs []string `json:"fallback_urls"` // Fallback server URLs
 }
 
 type TokenService struct {
 	config          *config.Config
 	projectService  *ProjectService
+	regionService   *RegionService
 }
 
 func NewTokenService(cfg *config.Config) *TokenService {

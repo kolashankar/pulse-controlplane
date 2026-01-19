@@ -67,6 +67,7 @@ func NewTokenService(cfg *config.Config) *TokenService {
 	return &TokenService{
 		config:         cfg,
 		projectService: NewProjectService(),
+		regionService:  NewRegionService(),
 	}
 }
 

@@ -43,8 +43,11 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
                 })
         })
 
-        // API v1 routes
-        v1 := router.Group("/v1")
+        // API routes with /api prefix for Kubernetes ingress routing
+        api := router.Group("/api")
+        {
+                // API v1 routes
+                v1 := api.Group("/v1")
         {
                 // Public routes (no authentication)
                 v1.GET("/status", func(c *gin.Context) {

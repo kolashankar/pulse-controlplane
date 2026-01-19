@@ -137,3 +137,19 @@ func (rl *RateLimiter) cleanup() {
 		rl.mu.Unlock()
 	}
 }
+
+// Global rate limiters
+var (
+	globalLimiter  = NewRateLimiter(100, time.Minute)  // 100 requests per minute per IP
+	projectLimiter = NewRateLimiter(1000, time.Minute) // 1000 requests per minute per project
+)
+
+// GlobalRateLimiter returns the global IP-based rate limiter middleware
+func GlobalRateLimiter() gin.HandlerFunc {
+	return globalLimiter.RateLimitByIP()
+}
+
+// ProjectRateLimiter returns the project-based rate limiter middleware
+func ProjectRateLimiter() gin.HandlerFunc {
+	return projectLimiter.RateLimitByProject()
+}

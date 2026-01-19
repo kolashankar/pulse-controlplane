@@ -3,6 +3,7 @@ package utils
 import (
 	"os"
 
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )

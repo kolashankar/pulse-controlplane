@@ -190,6 +190,7 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
                 v1.GET("/status/projects/:id", statusHandler.GetProjectHealth)
                 v1.GET("/status/regions", statusHandler.GetRegionAvailability)
         }
+        } // Close api group
 
         // 404 handler
         router.NoRoute(func(c *gin.Context) {

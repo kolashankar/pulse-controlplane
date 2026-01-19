@@ -38,6 +38,17 @@ func main() {
 	}
 	defer database.DisconnectMongoDB()
 
+	// Initialize default regions
+	log.Info().Msg("Initializing regions...")
+	regionService := services.NewRegionService()
+	ctx := context.Background()
+	if err := regionService.InitializeDefaultRegions(ctx); err != nil {
+		log.Error().Err(err).Msg("Failed to initialize regions")
+	}
+
+	// Start region health check loop (every 5 minutes)
+	go regionService.RunHealthCheckLoop(ctx, 5*time.Minute)
+
 	// Set Gin mode
 	gin.SetMode(cfg.GinMode)
 

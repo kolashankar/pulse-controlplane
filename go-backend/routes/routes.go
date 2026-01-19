@@ -48,14 +48,14 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
         {
                 // API v1 routes
                 v1 := api.Group("/v1")
-        {
-                // Public routes (no authentication)
-                v1.GET("/status", func(c *gin.Context) {
-                        c.JSON(http.StatusOK, gin.H{
-                                "status":  "operational",
-                                "message": "Pulse Control Plane is running",
+                {
+                        // Public routes (no authentication)
+                        v1.GET("/status", func(c *gin.Context) {
+                                c.JSON(http.StatusOK, gin.H{
+                                        "status":  "operational",
+                                        "message": "Pulse Control Plane is running",
+                                })
                         })
-                })
 
                 // ======= Phase 2: Core Control Plane APIs =======
 

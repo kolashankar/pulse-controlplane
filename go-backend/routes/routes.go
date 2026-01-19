@@ -152,6 +152,40 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
                         billing.POST("/stripe/customer", billingHandler.CreateStripeCustomer)
                         billing.POST("/stripe/payment-method", billingHandler.AttachPaymentMethod)
                 }
+
+                // ======= Phase 5: Admin Dashboard Features =======
+
+                // Team management routes (organization context)
+                orgs := v1.Group("/organizations/:id")
+                {
+                        orgs.GET("/members", teamHandler.ListTeamMembers)
+                        orgs.POST("/members", teamHandler.InviteTeamMember)
+                        orgs.GET("/members/:user_id", teamHandler.GetTeamMember)
+                        orgs.DELETE("/members/:user_id", teamHandler.RemoveTeamMember)
+                        orgs.PUT("/members/:user_id/role", teamHandler.UpdateTeamMemberRole)
+                        orgs.GET("/invitations", teamHandler.ListPendingInvitations)
+                        orgs.DELETE("/invitations/:invitation_id", teamHandler.RevokeInvitation)
+                }
+
+                // Invitation acceptance (public)
+                invitations := v1.Group("/invitations")
+                {
+                        invitations.POST("/accept", teamHandler.AcceptInvitation)
+                }
+
+                // Audit log routes
+                auditLogs := v1.Group("/audit-logs")
+                {
+                        auditLogs.GET("", auditHandler.GetAuditLogs)
+                        auditLogs.GET("/export", auditHandler.ExportAuditLogs)
+                        auditLogs.GET("/stats", auditHandler.GetAuditStats)
+                        auditLogs.GET("/recent", auditHandler.GetRecentLogs)
+                }
+
+                // Status and monitoring routes (enhanced)
+                v1.GET("/status", statusHandler.GetSystemStatus)
+                v1.GET("/status/projects/:id", statusHandler.GetProjectHealth)
+                v1.GET("/status/regions", statusHandler.GetRegionAvailability)
         }
 
         // 404 handler

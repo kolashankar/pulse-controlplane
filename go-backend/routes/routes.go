@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"pulse-control-plane/config"
+	"pulse-control-plane/database"
 	"pulse-control-plane/handlers"
 	"pulse-control-plane/middleware"
 	"pulse-control-plane/services"
@@ -23,9 +24,10 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	router.Use(middleware.AuditMiddleware())
 
 	// Initialize services
-	usageService := services.NewUsageService()
-	aggregatorService := services.NewAggregatorService()
-	billingService := services.NewBillingService()
+	db := database.GetDB()
+	usageService := services.NewUsageService(db)
+	aggregatorService := services.NewAggregatorService(db)
+	billingService := services.NewBillingService(db, usageService)
 
 	// Initialize handlers
 	organizationHandler := handlers.NewOrganizationHandler()

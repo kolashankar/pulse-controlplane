@@ -21,6 +21,11 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
         // Apply audit logging middleware
         router.Use(middleware.AuditMiddleware())
 
+        // Initialize services
+        usageService := services.NewUsageService()
+        aggregatorService := services.NewAggregatorService()
+        billingService := services.NewBillingService()
+
         // Initialize handlers
         organizationHandler := handlers.NewOrganizationHandler()
         projectHandler := handlers.NewProjectHandler()
@@ -28,8 +33,8 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
         egressHandler := handlers.NewEgressHandler()
         ingressHandler := handlers.NewIngressHandler()
         webhookHandler := handlers.NewWebhookHandler()
-        usageHandler := handlers.NewUsageHandler(cfg.UsageService, cfg.AggregatorService)
-        billingHandler := handlers.NewBillingHandler(cfg.BillingService)
+        usageHandler := handlers.NewUsageHandler(usageService, aggregatorService)
+        billingHandler := handlers.NewBillingHandler(billingService)
         teamHandler := handlers.NewTeamHandler()
         auditHandler := handlers.NewAuditHandler()
         statusHandler := handlers.NewStatusHandler()

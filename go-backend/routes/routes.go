@@ -125,8 +125,9 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
                 {
                         usage.GET("/:project_id", usageHandler.GetUsageMetrics)
                         usage.GET("/:project_id/summary", usageHandler.GetUsageSummary)
-                        usage.GET("/:project_id/detailed", usageHandler.GetDetailedUsage)
-                        usage.POST("/:project_id/reset", usageHandler.ResetUsageMetrics)
+                        usage.GET("/:project_id/aggregated", usageHandler.GetAggregatedUsage)
+                        usage.GET("/:project_id/alerts", usageHandler.GetAlerts)
+                        usage.POST("/:project_id/check-limits", usageHandler.CheckLimits)
                 }
 
                 // Billing routes (requires API key authentication)
@@ -134,12 +135,16 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
                 billing.Use(middleware.AuthenticateProject())
                 billing.Use(middleware.ProjectRateLimiter())
                 {
-                        billing.GET("/:project_id/invoice", billingHandler.GetInvoice)
+                        billing.GET("/:project_id/dashboard", billingHandler.GetBillingDashboard)
+                        billing.POST("/:project_id/invoice", billingHandler.GenerateInvoice)
+                        billing.GET("/invoice/:invoice_id", billingHandler.GetInvoice)
                         billing.GET("/:project_id/invoices", billingHandler.ListInvoices)
-                        billing.POST("/:project_id/invoice/generate", billingHandler.GenerateInvoice)
-                        billing.GET("/:project_id/costs", billingHandler.GetCostBreakdown)
-                        billing.PUT("/:project_id/billing-info", billingHandler.UpdateBillingInfo)
-                        billing.GET("/:project_id/billing-info", billingHandler.GetBillingInfo)
+                        billing.PUT("/invoice/:invoice_id/status", billingHandler.UpdateInvoiceStatus)
+                        
+                        // Stripe integration (placeholder)
+                        billing.POST("/:project_id/stripe/integrate", billingHandler.IntegrateStripe)
+                        billing.POST("/stripe/customer", billingHandler.CreateStripeCustomer)
+                        billing.POST("/stripe/payment-method", billingHandler.AttachPaymentMethod)
                 }
         }
 

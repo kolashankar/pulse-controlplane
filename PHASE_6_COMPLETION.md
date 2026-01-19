@@ -477,7 +477,7 @@ Phase 6 implemented a complete React dashboard with 11 pages, modern UI componen
 
 ### Environment Variables
 ```env
-REACT_APP_BACKEND_URL=https://safepulse-deploy.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://analytics-hub-237.preview.emergentagent.com
 WDS_SOCKET_PORT=443
 ENABLE_HEALTH_CHECK=false
 ```

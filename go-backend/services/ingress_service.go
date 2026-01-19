@@ -108,11 +108,7 @@ func (s *IngressService) ListIngresses(ctx context.Context, projectID primitive.
 	
 	// Find with pagination
 	cursor, err := s.collection.Find(ctx, filter, 
-		&mongo.Options{
-			Skip: &skip,
-			Limit: &limit,
-			Sort: bson.M{"created_at": -1},
-		},
+		options.Find().SetSkip(int64(skip)).SetLimit(int64(limit)).SetSort(bson.M{"created_at": -1}),
 	)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to list ingresses: %w", err)

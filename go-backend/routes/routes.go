@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"pulse-control-plane/config"
+	"pulse-control-plane/handlers"
 	"pulse-control-plane/middleware"
 
 	"github.com/gin-gonic/gin"

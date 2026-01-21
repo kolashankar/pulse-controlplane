@@ -51,6 +51,11 @@ type Config struct {
 	// AI Moderation
 	GeminiAPIKey       string
 	ModerationEnabled  bool
+
+	// Razorpay
+	RazorpayKeyID       string
+	RazorpayKeySecret   string
+	RazorpayWebhookSecret string
 }
 
 var AppConfig *Config

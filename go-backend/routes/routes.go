@@ -251,6 +251,60 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				analytics.GET("/forecast/:project_id", analyticsHandler.ForecastUsage)
 			}
 
+			// ======= Phase 9: Activity Feeds & Presence (Completion Plan) =======
+
+			// Activity Feeds routes (Phase 1)
+			feeds := v1.Group("/feeds")
+			feeds.Use(middleware.AuthenticateProject())
+			feeds.Use(middleware.ProjectRateLimiter())
+			{
+				// Activity management
+				feeds.POST("/activities", feedHandler.CreateActivity)
+				feeds.DELETE("/activities/:activity_id", feedHandler.DeleteActivity)
+				
+				// Feed retrieval
+				feeds.GET("/:user_id", feedHandler.GetFeedItems)
+				feeds.GET("/:user_id/aggregated", feedHandler.GetAggregatedFeed)
+				
+				// Follow/Unfollow
+				feeds.POST("/:user_id/follow", feedHandler.Follow)
+				feeds.DELETE("/:user_id/unfollow", feedHandler.Unfollow)
+				
+				// Followers and Following
+				feeds.GET("/:user_id/followers", feedHandler.GetFollowers)
+				feeds.GET("/:user_id/following", feedHandler.GetFollowing)
+				feeds.GET("/:user_id/stats", feedHandler.GetFollowStats)
+				
+				// Feed item actions
+				feeds.POST("/:user_id/mark-seen", feedHandler.MarkAsSeen)
+				feeds.POST("/:user_id/mark-read", feedHandler.MarkAsRead)
+			}
+
+			// Presence routes (Phase 2)
+			presence := v1.Group("/presence")
+			presence.Use(middleware.AuthenticateProject())
+			presence.Use(middleware.ProjectRateLimiter())
+			{
+				// Online/Offline status
+				presence.POST("/online", presenceHandler.SetOnline)
+				presence.POST("/offline", presenceHandler.SetOffline)
+				presence.POST("/status", presenceHandler.SetStatus)
+				
+				// Status retrieval
+				presence.GET("/status/:user_id", presenceHandler.GetUserStatus)
+				presence.POST("/bulk", presenceHandler.GetBulkStatus)
+				
+				// Typing indicators
+				presence.POST("/typing", presenceHandler.SetTyping)
+				
+				// Room presence
+				presence.GET("/room/:room_id", presenceHandler.GetRoomPresence)
+				
+				// Activity tracking
+				presence.POST("/activity", presenceHandler.UpdateActivity)
+				presence.GET("/activity/:user_id", presenceHandler.GetUserActivities)
+			}
+
 			// ======= Phase 8.3: Developer Tools =======
 
 			// Developer tools handlers

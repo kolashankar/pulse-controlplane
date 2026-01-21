@@ -42,6 +42,7 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	usageService := services.NewUsageService(db)
 	aggregatorService := services.NewAggregatorService(db)
 	billingService := services.NewBillingService(db, usageService)
+	razorpayService := services.NewRazorpayService(db, cfg.RazorpayKeyID, cfg.RazorpayKeySecret, cfg.RazorpayWebhookSecret, billingService)
 
 	// Initialize all services
 	feedService := services.NewFeedService(db)
@@ -57,6 +58,7 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	webhookHandler := handlers.NewWebhookHandler()
 	usageHandler := handlers.NewUsageHandler(usageService, aggregatorService)
 	billingHandler := handlers.NewBillingHandler(billingService)
+	razorpayHandler := handlers.NewRazorpayHandler(razorpayService)
 	teamHandler := handlers.NewTeamHandler()
 	auditHandler := handlers.NewAuditHandler()
 	statusHandler := handlers.NewStatusHandler()

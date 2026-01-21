@@ -477,7 +477,7 @@ Phase 6 implemented a complete React dashboard with 11 pages, modern UI componen
 
 ### Environment Variables
 ```env
-REACT_APP_BACKEND_URL=https://presence-api-1.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://payment-gateway-304.preview.emergentagent.com
 WDS_SOCKET_PORT=443
 ENABLE_HEALTH_CHECK=false
 ```

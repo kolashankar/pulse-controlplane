@@ -223,7 +223,7 @@ func (s *RazorpayService) GeneratePaymentLink(ctx context.Context, invoiceID pri
 		"description": fmt.Sprintf("Invoice %s", invoice.InvoiceNumber),
 		"customer": map[string]interface{}{
 			"name":  org.Name,
-			"email": org.BillingEmail,
+			"email": org.AdminEmail,
 		},
 		"notify": map[string]interface{}{
 			"sms":   true,

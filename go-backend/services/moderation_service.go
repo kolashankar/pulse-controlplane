@@ -331,7 +331,23 @@ func (s *ModerationService) saveAnalysis(ctx context.Context, analysis *models.C
 
 // determineSeverity determines the severity level based on scores
 func (s *ModerationService) determineSeverity(toxicity, profanity, spam, hate, sexual, violence float64) models.ModerationSeverity {
-	maxScore := max(toxicity, profanity, spam, hate, sexual, violence)
+	// Find max score
+	maxScore := toxicity
+	if profanity > maxScore {
+		maxScore = profanity
+	}
+	if spam > maxScore {
+		maxScore = spam
+	}
+	if hate > maxScore {
+		maxScore = hate
+	}
+	if sexual > maxScore {
+		maxScore = sexual
+	}
+	if violence > maxScore {
+		maxScore = violence
+	}
 
 	if maxScore >= 0.9 {
 		return models.ModerationSeverityCritical

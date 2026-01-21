@@ -463,11 +463,9 @@ func (s *RazorpayService) GetInvoices(ctx context.Context, projectID primitive.O
 // ProcessRefund processes a refund for a payment
 func (s *RazorpayService) ProcessRefund(ctx context.Context, paymentID string, amount float64) (string, error) {
 	// Create refund in Razorpay
-	data := map[string]interface{}{
-		"amount": int(amount * 100), // Convert to paise
-	}
+	amountInPaise := int(amount * 100) // Convert to paise
 
-	body, err := s.client.Payment.Refund(paymentID, data, nil)
+	body, err := s.client.Payment.Refund(paymentID, amountInPaise, map[string]interface{}{}, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed to create refund: %w", err)
 	}

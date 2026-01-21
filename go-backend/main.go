@@ -49,6 +49,11 @@ func main() {
 	// Start region health check loop (every 5 minutes)
 	go regionService.RunHealthCheckLoop(ctx, 5*time.Minute)
 
+	// Initialize presence service and start cleanup loop
+	log.Info().Msg("Initializing presence service...")
+	presenceService := services.NewPresenceService(database.GetDB())
+	go presenceService.RunCleanupLoop(ctx, 2*time.Minute)
+
 	// Set Gin mode
 	gin.SetMode(cfg.GinMode)
 

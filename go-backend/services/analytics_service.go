@@ -57,7 +57,7 @@ func (s *AnalyticsService) CreateCustomMetric(ctx context.Context, metric *model
 
 // GetCustomMetrics returns all custom metrics for a project
 func (s *AnalyticsService) GetCustomMetrics(ctx context.Context, projectID primitive.ObjectID) ([]models.CustomMetric, error) {
-	collection := database.DB.Collection(models.CustomMetric{}.TableName())
+	collection := s.db.Collection(models.CustomMetric{}.TableName())
 
 	cursor, err := collection.Find(ctx, bson.M{"project_id": projectID})
 	if err != nil {
@@ -75,7 +75,7 @@ func (s *AnalyticsService) GetCustomMetrics(ctx context.Context, projectID primi
 
 // CreateAlert creates a new metric alert
 func (s *AnalyticsService) CreateAlert(ctx context.Context, alert *models.MetricAlert) error {
-	collection := database.DB.Collection(models.MetricAlert{}.TableName())
+	collection := s.db.Collection(models.MetricAlert{}.TableName())
 
 	alert.ID = primitive.NewObjectID()
 	alert.IsActive = true
@@ -99,7 +99,7 @@ func (s *AnalyticsService) CreateAlert(ctx context.Context, alert *models.Metric
 
 // GetAlerts returns all alerts for a project
 func (s *AnalyticsService) GetAlerts(ctx context.Context, projectID primitive.ObjectID) ([]models.MetricAlert, error) {
-	collection := database.DB.Collection(models.MetricAlert{}.TableName())
+	collection := s.db.Collection(models.MetricAlert{}.TableName())
 
 	cursor, err := collection.Find(ctx, bson.M{"project_id": projectID})
 	if err != nil {
@@ -165,7 +165,7 @@ func (s *AnalyticsService) CheckAlerts(ctx context.Context, projectID primitive.
 			}
 
 			// Save trigger
-			collection := database.DB.Collection(models.AlertTrigger{}.TableName())
+			collection := s.db.Collection(models.AlertTrigger{}.TableName())
 			_, err := collection.InsertOne(ctx, trigger)
 			if err != nil {
 				log.Error().Err(err).Msg("Failed to save alert trigger")
@@ -173,7 +173,7 @@ func (s *AnalyticsService) CheckAlerts(ctx context.Context, projectID primitive.
 			}
 
 			// Update alert last triggered time
-			alertCollection := database.DB.Collection(models.MetricAlert{}.TableName())
+			alertCollection := s.db.Collection(models.MetricAlert{}.TableName())
 			now := time.Now()
 			_, err = alertCollection.UpdateOne(
 				ctx,
@@ -211,7 +211,7 @@ func (s *AnalyticsService) GetMetricValue(ctx context.Context, projectID primiti
 	// Get usage data for the duration
 	startTime := time.Now().Add(-time.Duration(durationMinutes) * time.Minute)
 
-	collection := database.DB.Collection(models.UsageMetric{}.TableName())
+	collection := s.db.Collection(models.UsageMetric{}.TableName())
 
 	// Map metric names to usage event types
 	eventType := metricName
@@ -317,7 +317,7 @@ func (s *AnalyticsService) GetRealTimeMetrics(ctx context.Context, projectID pri
 		currentValue, _ := s.GetMetricValue(ctx, projectID, metricName, 15)
 
 		// Get previous value (15-30 minutes ago)
-		collection := database.DB.Collection(models.UsageMetric{}.TableName())
+		collection := s.db.Collection(models.UsageMetric{}.TableName())
 		filter := bson.M{
 			"project_id": projectID,
 			"event_type": metricName,
@@ -389,7 +389,7 @@ func (s *AnalyticsService) GetRealTimeMetrics(ctx context.Context, projectID pri
 
 // GetActiveAlertsCount returns count of active alerts
 func (s *AnalyticsService) GetActiveAlertsCount(ctx context.Context, projectID primitive.ObjectID) (int, error) {
-	collection := database.DB.Collection(models.MetricAlert{}.TableName())
+	collection := s.db.Collection(models.MetricAlert{}.TableName())
 
 	count, err := collection.CountDocuments(ctx, bson.M{
 		"project_id": projectID,
@@ -401,7 +401,7 @@ func (s *AnalyticsService) GetActiveAlertsCount(ctx context.Context, projectID p
 
 // GetRecentTriggers returns recent alert triggers
 func (s *AnalyticsService) GetRecentTriggers(ctx context.Context, projectID primitive.ObjectID, limit int) ([]models.AlertTrigger, error) {
-	collection := database.DB.Collection(models.AlertTrigger{}.TableName())
+	collection := s.db.Collection(models.AlertTrigger{}.TableName())
 
 	opts := options.Find().
 		SetSort(bson.D{{Key: "triggered_at", Value: -1}}).
@@ -423,7 +423,7 @@ func (s *AnalyticsService) GetRecentTriggers(ctx context.Context, projectID prim
 
 // GetTopEvents returns top event types by count
 func (s *AnalyticsService) GetTopEvents(ctx context.Context, projectID primitive.ObjectID, limit int) ([]models.EventSummary, error) {
-	collection := database.DB.Collection(models.UsageMetric{}.TableName())
+	collection := s.db.Collection(models.UsageMetric{}.TableName())
 
 	// Aggregate top events from last 24 hours
 	last24Hours := time.Now().Add(-24 * time.Hour)
@@ -492,7 +492,7 @@ func (s *AnalyticsService) ExportAnalytics(ctx context.Context, projectID primit
 		CreatedAt:  time.Now(),
 	}
 
-	collection := database.DB.Collection(models.AnalyticsExport{}.TableName())
+	collection := s.db.Collection(models.AnalyticsExport{}.TableName())
 	_, err := collection.InsertOne(ctx, export)
 	if err != nil {
 		return nil, err
@@ -507,7 +507,7 @@ func (s *AnalyticsService) ExportAnalytics(ctx context.Context, projectID primit
 // processExport processes the export in background
 func (s *AnalyticsService) processExport(ctx context.Context, export *models.AnalyticsExport) {
 	// Get usage metrics
-	collection := database.DB.Collection(models.UsageMetric{}.TableName())
+	collection := s.db.Collection(models.UsageMetric{}.TableName())
 
 	filter := bson.M{
 		"project_id": export.ProjectID,
@@ -564,7 +564,7 @@ func (s *AnalyticsService) processExport(ctx context.Context, export *models.Ana
 		Msg("Export completed")
 
 	// Update export record
-	exportCollection := database.DB.Collection(models.AnalyticsExport{}.TableName())
+	exportCollection := s.db.Collection(models.AnalyticsExport{}.TableName())
 	exportCollection.UpdateOne(ctx, bson.M{"_id": export.ID}, bson.M{
 		"$set": bson.M{
 			"completed_at": completedAt,
@@ -574,7 +574,7 @@ func (s *AnalyticsService) processExport(ctx context.Context, export *models.Ana
 
 // updateExportStatus updates export status
 func (s *AnalyticsService) updateExportStatus(ctx context.Context, exportID primitive.ObjectID, status, fileURL string, fileSize int64) {
-	collection := database.DB.Collection(models.AnalyticsExport{}.TableName())
+	collection := s.db.Collection(models.AnalyticsExport{}.TableName())
 
 	update := bson.M{
 		"$set": bson.M{
@@ -656,7 +656,7 @@ func (s *AnalyticsService) ForecastUsage(ctx context.Context, projectID primitiv
 	// Get historical data (last 30 days)
 	startDate := time.Now().Add(-30 * 24 * time.Hour)
 
-	collection := database.DB.Collection(models.UsageMetric{}.TableName())
+	collection := s.db.Collection(models.UsageMetric{}.TableName())
 
 	// Aggregate daily usage
 	pipeline := []bson.M{
@@ -770,7 +770,7 @@ func (s *AnalyticsService) ForecastUsage(ctx context.Context, projectID primitiv
 	}
 
 	// Save forecasts to database
-	forecastCollection := database.DB.Collection(models.UsageForecast{}.TableName())
+	forecastCollection := s.db.Collection(models.UsageForecast{}.TableName())
 	var documents []interface{}
 	for _, f := range forecasts {
 		documents = append(documents, f)

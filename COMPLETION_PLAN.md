@@ -577,9 +577,9 @@ function App() {
 ## Success Criteria
 
 ### Functional Requirements:
-- [🔄] Activity feeds with fan-out logic
-- [🔄] Real-time presence tracking
-- [ ] AI-powered content moderation
+- [✅] Activity feeds with fan-out logic
+- [✅] Real-time presence tracking
+- [✅] AI-powered content moderation
 - [ ] Razorpay payment integration
 - [ ] Edge token caching
 - [ ] Webhook replay functionality

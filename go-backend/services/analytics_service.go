@@ -34,7 +34,7 @@ func NewAnalyticsService(db *mongo.Database, usageService *UsageService) *Analyt
 
 // CreateCustomMetric creates a new custom metric definition
 func (s *AnalyticsService) CreateCustomMetric(ctx context.Context, metric *models.CustomMetric) error {
-	collection := database.DB.Collection(models.CustomMetric{}.TableName())
+	collection := s.db.Collection(models.CustomMetric{}.TableName())
 
 	metric.ID = primitive.NewObjectID()
 	metric.IsActive = true

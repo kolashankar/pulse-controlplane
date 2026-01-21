@@ -43,6 +43,10 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	aggregatorService := services.NewAggregatorService(db)
 	billingService := services.NewBillingService(db, usageService)
 
+	// Initialize all services
+	feedService := services.NewFeedService(db)
+	presenceService := services.NewPresenceService(db)
+	
 	// Initialize handlers
 	organizationHandler := handlers.NewOrganizationHandler()
 	projectHandler := handlers.NewProjectHandler()
@@ -57,6 +61,8 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	statusHandler := handlers.NewStatusHandler()
 	regionHandler := handlers.NewRegionHandler()
 	analyticsHandler := handlers.NewAnalyticsHandler()
+	feedHandler := handlers.NewFeedHandler(feedService)
+	presenceHandler := handlers.NewPresenceHandler(presenceService)
 
 	// Health check endpoint (no auth required)
 	router.GET("/health", func(c *gin.Context) {

@@ -180,6 +180,17 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				billing.POST("/:project_id/stripe/integrate", billingHandler.IntegrateStripe)
 				billing.POST("/stripe/customer", billingHandler.CreateStripeCustomer)
 				billing.POST("/stripe/payment-method", billingHandler.AttachPaymentMethod)
+
+				// Razorpay integration (Phase 4)
+				billing.POST("/razorpay/customer", razorpayHandler.CreateCustomer)
+				billing.POST("/razorpay/subscription", razorpayHandler.CreateSubscription)
+				billing.POST("/razorpay/payment-link", razorpayHandler.GeneratePaymentLink)
+				billing.POST("/razorpay/verify", razorpayHandler.VerifyPayment)
+				billing.POST("/razorpay/webhook", razorpayHandler.HandleWebhook) // No auth for webhooks
+				billing.GET("/razorpay/invoices", razorpayHandler.GetInvoices)
+				billing.POST("/razorpay/refund", razorpayHandler.ProcessRefund)
+				billing.GET("/razorpay/customer/:org_id", razorpayHandler.GetCustomer)
+				billing.GET("/razorpay/subscription/:project_id", razorpayHandler.GetSubscription)
 			}
 
 			// ======= Phase 5: Admin Dashboard Features =======

@@ -47,6 +47,10 @@ type Config struct {
 
 	// Logging
 	LogLevel string
+
+	// AI Moderation
+	GeminiAPIKey       string
+	ModerationEnabled  bool
 }
 
 var AppConfig *Config

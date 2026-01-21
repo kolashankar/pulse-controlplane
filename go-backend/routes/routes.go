@@ -48,7 +48,7 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	feedService := services.NewFeedService(db)
 	presenceService := services.NewPresenceService(db)
 	moderationService := services.NewModerationService(db, cfg.GeminiAPIKey)
-	
+
 	// Initialize handlers
 	organizationHandler := handlers.NewOrganizationHandler()
 	projectHandler := handlers.NewProjectHandler()
@@ -276,20 +276,20 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				// Activity management
 				feeds.POST("/activities", feedHandler.CreateActivity)
 				feeds.DELETE("/activities/:activity_id", feedHandler.DeleteActivity)
-				
+
 				// Feed retrieval
 				feeds.GET("/:user_id", feedHandler.GetFeedItems)
 				feeds.GET("/:user_id/aggregated", feedHandler.GetAggregatedFeed)
-				
+
 				// Follow/Unfollow
 				feeds.POST("/:user_id/follow", feedHandler.Follow)
 				feeds.DELETE("/:user_id/unfollow", feedHandler.Unfollow)
-				
+
 				// Followers and Following
 				feeds.GET("/:user_id/followers", feedHandler.GetFollowers)
 				feeds.GET("/:user_id/following", feedHandler.GetFollowing)
 				feeds.GET("/:user_id/stats", feedHandler.GetFollowStats)
-				
+
 				// Feed item actions
 				feeds.POST("/:user_id/mark-seen", feedHandler.MarkAsSeen)
 				feeds.POST("/:user_id/mark-read", feedHandler.MarkAsRead)
@@ -304,17 +304,17 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				presence.POST("/online", presenceHandler.SetOnline)
 				presence.POST("/offline", presenceHandler.SetOffline)
 				presence.POST("/status", presenceHandler.SetStatus)
-				
+
 				// Status retrieval
 				presence.GET("/status/:user_id", presenceHandler.GetUserStatus)
 				presence.POST("/bulk", presenceHandler.GetBulkStatus)
-				
+
 				// Typing indicators
 				presence.POST("/typing", presenceHandler.SetTyping)
-				
+
 				// Room presence
 				presence.GET("/room/:room_id", presenceHandler.GetRoomPresence)
-				
+
 				// Activity tracking
 				presence.POST("/activity", presenceHandler.UpdateActivity)
 				presence.GET("/activity/:user_id", presenceHandler.GetUserActivities)
@@ -328,19 +328,19 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				// Content analysis
 				moderation.POST("/analyze/text", moderationHandler.AnalyzeText)
 				moderation.POST("/analyze/image", moderationHandler.AnalyzeImage)
-				
+
 				// Rules management
 				moderation.POST("/rules", moderationHandler.CreateRule)
 				moderation.GET("/rules", moderationHandler.GetRules)
-				
+
 				// Logs and stats
 				moderation.GET("/logs", moderationHandler.GetLogs)
 				moderation.GET("/stats", moderationHandler.GetStats)
-				
+
 				// Whitelist/Blacklist
 				moderation.POST("/whitelist", moderationHandler.AddToWhitelist)
 				moderation.POST("/blacklist", moderationHandler.AddToBlacklist)
-				
+
 				// Configuration
 				moderation.GET("/config", moderationHandler.GetConfig)
 			}
@@ -376,10 +376,10 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				sso.GET("/config/:org_id", ssoHandler.GetSSOConfig)
 				sso.PUT("/config/:id", ssoHandler.UpdateSSOConfig)
 				sso.DELETE("/config/:id", ssoHandler.DeleteSSOConfig)
-				
+
 				// OAuth callbacks
 				sso.GET("/callback/:provider", ssoHandler.OAuthCallback)
-				
+
 				// SAML callbacks
 				sso.POST("/saml", ssoHandler.SAMLCallback)
 			}
@@ -390,11 +390,11 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				// SLA Templates
 				sla.POST("/templates", slaHandler.CreateSLATemplate)
 				sla.GET("/templates", slaHandler.GetSLATemplates)
-				
+
 				// Organization SLA
 				sla.POST("/assign", slaHandler.AssignSLAToOrg)
 				sla.GET("/organization/:org_id", slaHandler.GetOrganizationSLA)
-				
+
 				// SLA Reports and Breaches
 				sla.GET("/report/:org_id", slaHandler.GetSLAReport)
 				sla.GET("/breaches/:org_id", slaHandler.GetSLABreaches)
@@ -408,12 +408,12 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				support.GET("/tickets", supportHandler.ListTickets)
 				support.GET("/tickets/:id", supportHandler.GetTicket)
 				support.PUT("/tickets/:id", supportHandler.UpdateTicket)
-				
+
 				// Ticket assignment and comments
 				support.POST("/tickets/:id/assign", supportHandler.AssignTicket)
 				support.POST("/tickets/:id/comments", supportHandler.AddComment)
 				support.GET("/tickets/:id/comments", supportHandler.GetTicketComments)
-				
+
 				// Statistics
 				support.GET("/stats", supportHandler.GetTicketStats)
 			}
@@ -427,10 +427,10 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				deployment.PUT("/config/:id", deploymentHandler.UpdateDeploymentConfig)
 				deployment.DELETE("/config/:id", deploymentHandler.DeleteDeploymentConfig)
 				deployment.GET("/configs", deploymentHandler.ListDeploymentConfigs)
-				
+
 				// License validation
 				deployment.POST("/validate-license", deploymentHandler.ValidateLicense)
-				
+
 				// Metrics
 				deployment.GET("/metrics/:deployment_id", deploymentHandler.GetDeploymentMetrics)
 				deployment.GET("/metrics/:deployment_id/latest", deploymentHandler.GetLatestDeploymentMetrics)

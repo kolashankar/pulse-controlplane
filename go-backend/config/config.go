@@ -117,6 +117,11 @@ func LoadConfig() (*Config, error) {
 		// AI Moderation
 		GeminiAPIKey:      getEnv("GEMINI_API_KEY", "mock-gemini-key-for-testing"),
 		ModerationEnabled: getEnv("MODERATION_ENABLED", "true") == "true",
+
+		// Razorpay
+		RazorpayKeyID:         getEnv("RAZORPAY_KEY_ID", "rzp_test_mock"),
+		RazorpayKeySecret:     getEnv("RAZORPAY_KEY_SECRET", "mock_secret"),
+		RazorpayWebhookSecret: getEnv("RAZORPAY_WEBHOOK_SECRET", "mock_webhook_secret"),
 	}
 
 	AppConfig = config

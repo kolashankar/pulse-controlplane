@@ -46,6 +46,7 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	// Initialize all services
 	feedService := services.NewFeedService(db)
 	presenceService := services.NewPresenceService(db)
+	moderationService := services.NewModerationService(db, cfg.GeminiAPIKey)
 	
 	// Initialize handlers
 	organizationHandler := handlers.NewOrganizationHandler()
@@ -63,6 +64,7 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 	analyticsHandler := handlers.NewAnalyticsHandler()
 	feedHandler := handlers.NewFeedHandler(feedService)
 	presenceHandler := handlers.NewPresenceHandler(presenceService)
+	moderationHandler := handlers.NewModerationHandler(moderationService)
 
 	// Health check endpoint (no auth required)
 	router.GET("/health", func(c *gin.Context) {

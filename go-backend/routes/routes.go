@@ -244,6 +244,97 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				// Forecast
 				analytics.GET("/forecast/:project_id", analyticsHandler.ForecastUsage)
 			}
+
+			// ======= Phase 8.3: Developer Tools =======
+
+			// Developer tools handlers
+			developerToolsHandler := handlers.NewDeveloperToolsHandler()
+			ssoHandler := handlers.NewSSOHandler()
+			slaHandler := handlers.NewSLAHandler()
+			supportHandler := handlers.NewSupportHandler()
+			deploymentHandler := handlers.NewDeploymentHandler()
+
+			// Developer Tools routes (Phase 8.3)
+			developer := v1.Group("/developer")
+			{
+				developer.GET("/postman-collection", developerToolsHandler.GetPostmanCollection)
+				developer.GET("/openapi-spec", developerToolsHandler.GetOpenAPISpec)
+				developer.GET("/sdk/go", developerToolsHandler.DownloadGoSDK)
+				developer.GET("/sdk/javascript", developerToolsHandler.DownloadJavaScriptSDK)
+				developer.GET("/sdk/python", developerToolsHandler.DownloadPythonSDK)
+			}
+
+			// API Documentation (Swagger UI)
+			router.GET("/api/docs", developerToolsHandler.GetAPIDocumentation)
+
+			// ======= Phase 8.4: Enterprise Features =======
+
+			// SSO Configuration routes
+			sso := v1.Group("/sso")
+			{
+				sso.POST("/config", ssoHandler.CreateSSOConfig)
+				sso.GET("/config/:org_id", ssoHandler.GetSSOConfig)
+				sso.PUT("/config/:id", ssoHandler.UpdateSSOConfig)
+				sso.DELETE("/config/:id", ssoHandler.DeleteSSOConfig)
+				
+				// OAuth callbacks
+				sso.GET("/callback/:provider", ssoHandler.OAuthCallback)
+				
+				// SAML callbacks
+				sso.POST("/saml", ssoHandler.SAMLCallback)
+			}
+
+			// SLA Management routes
+			sla := v1.Group("/sla")
+			{
+				// SLA Templates
+				sla.POST("/templates", slaHandler.CreateSLATemplate)
+				sla.GET("/templates", slaHandler.GetSLATemplates)
+				
+				// Organization SLA
+				sla.POST("/assign", slaHandler.AssignSLAToOrg)
+				sla.GET("/organization/:org_id", slaHandler.GetOrganizationSLA)
+				
+				// SLA Reports and Breaches
+				sla.GET("/report/:org_id", slaHandler.GetSLAReport)
+				sla.GET("/breaches/:org_id", slaHandler.GetSLABreaches)
+			}
+
+			// Support Ticket System routes
+			support := v1.Group("/support")
+			{
+				// Ticket CRUD
+				support.POST("/tickets", supportHandler.CreateTicket)
+				support.GET("/tickets", supportHandler.ListTickets)
+				support.GET("/tickets/:id", supportHandler.GetTicket)
+				support.PUT("/tickets/:id", supportHandler.UpdateTicket)
+				
+				// Ticket assignment and comments
+				support.POST("/tickets/:id/assign", supportHandler.AssignTicket)
+				support.POST("/tickets/:id/comments", supportHandler.AddComment)
+				support.GET("/tickets/:id/comments", supportHandler.GetTicketComments)
+				
+				// Statistics
+				support.GET("/stats", supportHandler.GetTicketStats)
+			}
+
+			// Deployment Configuration routes
+			deployment := v1.Group("/deployment")
+			{
+				// Deployment config CRUD
+				deployment.POST("/config", deploymentHandler.CreateDeploymentConfig)
+				deployment.GET("/config/:org_id", deploymentHandler.GetDeploymentConfig)
+				deployment.PUT("/config/:id", deploymentHandler.UpdateDeploymentConfig)
+				deployment.DELETE("/config/:id", deploymentHandler.DeleteDeploymentConfig)
+				deployment.GET("/configs", deploymentHandler.ListDeploymentConfigs)
+				
+				// License validation
+				deployment.POST("/validate-license", deploymentHandler.ValidateLicense)
+				
+				// Metrics
+				deployment.GET("/metrics/:deployment_id", deploymentHandler.GetDeploymentMetrics)
+				deployment.GET("/metrics/:deployment_id/latest", deploymentHandler.GetLatestDeploymentMetrics)
+			}
 		}
 	} // Close api group
 

@@ -108,6 +108,10 @@ func LoadConfig() (*Config, error) {
 
 		// Logging
 		LogLevel: getEnv("LOG_LEVEL", "info"),
+
+		// AI Moderation
+		GeminiAPIKey:      getEnv("GEMINI_API_KEY", "mock-gemini-key-for-testing"),
+		ModerationEnabled: getEnv("MODERATION_ENABLED", "true") == "true",
 	}
 
 	AppConfig = config

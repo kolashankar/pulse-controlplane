@@ -26,7 +26,7 @@ func NewRegionService() *RegionService {
 
 // InitializeDefaultRegions creates default region configurations
 func (s *RegionService) InitializeDefaultRegions(ctx context.Context) error {
-	collection := database.DB.Collection(models.RegionConfig{}.TableName())
+	collection := database.Database.Collection(models.RegionConfig{}.TableName())
 
 	// Check if regions already exist
 	count, err := collection.CountDocuments(ctx, bson.M{})
@@ -150,7 +150,7 @@ func (s *RegionService) InitializeDefaultRegions(ctx context.Context) error {
 
 // GetAllRegions returns all region configurations
 func (s *RegionService) GetAllRegions(ctx context.Context) ([]models.RegionConfig, error) {
-	collection := database.DB.Collection(models.RegionConfig{}.TableName())
+	collection := database.Database.Collection(models.RegionConfig{}.TableName())
 
 	cursor, err := collection.Find(ctx, bson.M{}, options.Find().SetSort(bson.D{{Key: "priority", Value: 1}}))
 	if err != nil {
@@ -168,7 +168,7 @@ func (s *RegionService) GetAllRegions(ctx context.Context) ([]models.RegionConfi
 
 // GetRegionByCode returns a specific region by code
 func (s *RegionService) GetRegionByCode(ctx context.Context, code string) (*models.RegionConfig, error) {
-	collection := database.DB.Collection(models.RegionConfig{}.TableName())
+	collection := database.Database.Collection(models.RegionConfig{}.TableName())
 
 	var region models.RegionConfig
 	err := collection.FindOne(ctx, bson.M{"code": code}).Decode(&region)
@@ -181,7 +181,7 @@ func (s *RegionService) GetRegionByCode(ctx context.Context, code string) (*mode
 
 // GetHealthyRegions returns all healthy and active regions
 func (s *RegionService) GetHealthyRegions(ctx context.Context) ([]models.RegionConfig, error) {
-	collection := database.DB.Collection(models.RegionConfig{}.TableName())
+	collection := database.Database.Collection(models.RegionConfig{}.TableName())
 
 	filter := bson.M{
 		"is_active":     true,
@@ -213,7 +213,7 @@ func (s *RegionService) CheckRegionHealth(ctx context.Context, regionCode string
 	latency, status := s.performHealthCheck(region.LatencyEndpoint)
 
 	// Update region health in database
-	collection := database.DB.Collection(models.RegionConfig{}.TableName())
+	collection := database.Database.Collection(models.RegionConfig{}.TableName())
 	update := bson.M{
 		"$set": bson.M{
 			"health_status":     status,
@@ -411,7 +411,7 @@ func (s *RegionService) buildRegionResponse(ctx context.Context, primary *models
 
 // UpdateRegionLoad updates the current load for a region
 func (s *RegionService) UpdateRegionLoad(ctx context.Context, regionCode string, loadDelta int) error {
-	collection := database.DB.Collection(models.RegionConfig{}.TableName())
+	collection := database.Database.Collection(models.RegionConfig{}.TableName())
 
 	update := bson.M{
 		"$inc": bson.M{

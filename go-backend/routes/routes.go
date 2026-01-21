@@ -307,6 +307,31 @@ func SetupRoutes(router *gin.Engine, cfg *config.Config) {
 				presence.GET("/activity/:user_id", presenceHandler.GetUserActivities)
 			}
 
+			// Moderation routes (Phase 3)
+			moderation := v1.Group("/moderation")
+			moderation.Use(middleware.AuthenticateProject())
+			moderation.Use(middleware.ProjectRateLimiter())
+			{
+				// Content analysis
+				moderation.POST("/analyze/text", moderationHandler.AnalyzeText)
+				moderation.POST("/analyze/image", moderationHandler.AnalyzeImage)
+				
+				// Rules management
+				moderation.POST("/rules", moderationHandler.CreateRule)
+				moderation.GET("/rules", moderationHandler.GetRules)
+				
+				// Logs and stats
+				moderation.GET("/logs", moderationHandler.GetLogs)
+				moderation.GET("/stats", moderationHandler.GetStats)
+				
+				// Whitelist/Blacklist
+				moderation.POST("/whitelist", moderationHandler.AddToWhitelist)
+				moderation.POST("/blacklist", moderationHandler.AddToBlacklist)
+				
+				// Configuration
+				moderation.GET("/config", moderationHandler.GetConfig)
+			}
+
 			// ======= Phase 8.3: Developer Tools =======
 
 			// Developer tools handlers

@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"time"
 
-	"pulse-control-plane/database"
 	"pulse-control-plane/models"
 
 	"github.com/rs/zerolog/log"

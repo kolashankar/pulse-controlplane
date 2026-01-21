@@ -21,12 +21,14 @@ import (
 )
 
 type AnalyticsService struct {
+	db           *mongo.Database
 	usageService *UsageService
 }
 
-func NewAnalyticsService() *AnalyticsService {
+func NewAnalyticsService(db *mongo.Database, usageService *UsageService) *AnalyticsService {
 	return &AnalyticsService{
-		usageService: NewUsageService(),
+		db:           db,
+		usageService: usageService,
 	}
 }
 

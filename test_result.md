@@ -115,7 +115,7 @@ backend:
   - task: "Phase 1: Activity Feeds Service - Models"
     implemented: true
     working: true
-    file: "/app/go-backend/models/feed.go"
+    file: "/app/backend/models/feed.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
@@ -127,7 +127,7 @@ backend:
   - task: "Phase 1: Activity Feeds Service - Service Layer"
     implemented: true
     working: true
-    file: "/app/go-backend/services/feed_service.go"
+    file: "/app/backend/services/feed_service.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
@@ -139,7 +139,7 @@ backend:
   - task: "Phase 1: Activity Feeds Service - Handlers"
     implemented: true
     working: true
-    file: "/app/go-backend/handlers/feed_handler.go"
+    file: "/app/backend/handlers/feed_handler.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -151,7 +151,7 @@ backend:
   - task: "Phase 1: Activity Feeds Service - Routes"
     implemented: true
     working: true
-    file: "/app/go-backend/routes/routes.go"
+    file: "/app/backend/routes/routes.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -163,7 +163,7 @@ backend:
   - task: "Phase 2: Presence Service - Models"
     implemented: true
     working: true
-    file: "/app/go-backend/models/presence.go"
+    file: "/app/backend/models/presence.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
@@ -175,7 +175,7 @@ backend:
   - task: "Phase 2: Presence Service - Service Layer"
     implemented: true
     working: true
-    file: "/app/go-backend/services/presence_service.go"
+    file: "/app/backend/services/presence_service.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
@@ -187,7 +187,7 @@ backend:
   - task: "Phase 2: Presence Service - Handlers"
     implemented: true
     working: true
-    file: "/app/go-backend/handlers/presence_handler.go"
+    file: "/app/backend/handlers/presence_handler.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -199,7 +199,7 @@ backend:
   - task: "Phase 2: Presence Service - Routes"
     implemented: true
     working: true
-    file: "/app/go-backend/routes/routes.go"
+    file: "/app/backend/routes/routes.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -211,7 +211,7 @@ backend:
   - task: "Phase 3: AI Moderation Service - Models"
     implemented: true
     working: true
-    file: "/app/go-backend/models/moderation.go"
+    file: "/app/backend/models/moderation.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
@@ -223,7 +223,7 @@ backend:
   - task: "Phase 3: AI Moderation Service - Service Layer"
     implemented: true
     working: true
-    file: "/app/go-backend/services/moderation_service.go"
+    file: "/app/backend/services/moderation_service.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -235,7 +235,7 @@ backend:
   - task: "Phase 3: AI Moderation Service - Handlers"
     implemented: true
     working: true
-    file: "/app/go-backend/handlers/moderation_handler.go"
+    file: "/app/backend/handlers/moderation_handler.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -247,7 +247,7 @@ backend:
   - task: "Phase 3: AI Moderation Service - Routes"
     implemented: true
     working: true
-    file: "/app/go-backend/routes/routes.go"
+    file: "/app/backend/routes/routes.go"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -395,12 +395,12 @@ agent_communication:
       - Auto-moderation configuration
       
       **Files Modified/Created**:
-      - Created: /app/go-backend/models/moderation.go
-      - Created: /app/go-backend/services/moderation_service.go
-      - Created: /app/go-backend/handlers/moderation_handler.go
-      - Modified: /app/go-backend/config/config.go (added Gemini config)
-      - Modified: /app/go-backend/routes/routes.go (wired moderation routes)
-      - Modified: /app/go-backend/.env (added GEMINI_API_KEY, MODERATION_ENABLED)
+      - Created: /app/backend/models/moderation.go
+      - Created: /app/backend/services/moderation_service.go
+      - Created: /app/backend/handlers/moderation_handler.go
+      - Modified: /app/backend/config/config.go (added Gemini config)
+      - Modified: /app/backend/routes/routes.go (wired moderation routes)
+      - Modified: /app/backend/.env (added GEMINI_API_KEY, MODERATION_ENABLED)
       - Updated: /app/COMPLETION_PLAN.md (marked all three phases as complete)
       
       **Ready for Testing**:

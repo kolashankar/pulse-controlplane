@@ -103,7 +103,10 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Complete Phase 1, Phase 2, and Phase 3 of the Pulse Control Plane project:
+  Current Task: Complete sections 8.3 (Developer Tools) and 8.4 (Enterprise Features) of the Pulse Control Plane project,
+  and rename the "go-backend" folder to "backend" with all configuration updates.
+  
+  Original tasks (Phases 1-3) were already completed:
   - Phase 1: Activity Feeds Service (social feed system with follow/followers, fan-out logic)
   - Phase 2: Presence Service (real-time presence tracking, typing indicators)
   - Phase 3: AI Moderation Service (content moderation using Google Gemini API)

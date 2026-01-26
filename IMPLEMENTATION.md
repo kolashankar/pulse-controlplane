@@ -321,8 +321,8 @@ POST   /v1/tokens/validate            ✅ Validate existing token
 - ✅ Soft delete for data retention
 
 **Next Steps:**
-1. Compile the Go backend: `cd /app/go-backend && go build -o pulse-control-plane .`
-2. Restart the backend service: `sudo supervisorctl restart go-backend`
+1. Compile the Go backend: `cd /app/backend && go build -o pulse-control-plane .`
+2. Restart the backend service: `sudo supervisorctl restart backend`
 3. Test all endpoints with curl or Postman
 4. Proceed to Phase 3: Media Control & Scaling
 
@@ -1116,7 +1116,7 @@ Viewer:
 **Files Created:**
 ```
 /app/
-├── go-backend/Dockerfile        ✅ Created (Multi-stage Go build)
+├── backend/Dockerfile        ✅ Created (Multi-stage Go build)
 ├── frontend/Dockerfile          ✅ Created (React production build)
 ├── docker-compose.yml           ✅ Created (Complete stack)
 ├── supervisor.conf              ✅ Created (Process management)
@@ -1205,7 +1205,7 @@ Viewer:
 - SCALING.md
 
 **Deployment:** 6 files (~500 lines)
-- go-backend/Dockerfile
+- backend/Dockerfile
 - frontend/Dockerfile
 - docker-compose.yml
 - supervisor.conf

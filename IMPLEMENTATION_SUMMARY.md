@@ -18,10 +18,10 @@ All three phases have been successfully implemented:
 - Mark as seen/read functionality
 
 **Files Created/Modified**:
-- Models: `/app/go-backend/models/feed.go` (already existed)
-- Service: `/app/go-backend/services/feed_service.go` (already existed)
-- Handler: `/app/go-backend/handlers/feed_handler.go` (already existed)
-- Routes: `/app/go-backend/routes/routes.go` (already wired, lines 257-281)
+- Models: `/app/backend/models/feed.go` (already existed)
+- Service: `/app/backend/services/feed_service.go` (already existed)
+- Handler: `/app/backend/handlers/feed_handler.go` (already existed)
+- Routes: `/app/backend/routes/routes.go` (already wired, lines 257-281)
 
 **API Endpoints** (All under `/api/v1/feeds`):
 ```
@@ -53,10 +53,10 @@ DELETE /api/v1/feeds/activities/:activity_id - Delete activity
 - TTL-based auto cleanup (presence: 5 min, typing: 10 sec, activity: 30 min)
 
 **Files Created/Modified**:
-- Models: `/app/go-backend/models/presence.go` (already existed)
-- Service: `/app/go-backend/services/presence_service.go` (already existed)
-- Handler: `/app/go-backend/handlers/presence_handler.go` (already existed)
-- Routes: `/app/go-backend/routes/routes.go` (already wired, lines 284-308)
+- Models: `/app/backend/models/presence.go` (already existed)
+- Service: `/app/backend/services/presence_service.go` (already existed)
+- Handler: `/app/backend/handlers/presence_handler.go` (already existed)
+- Routes: `/app/backend/routes/routes.go` (already wired, lines 284-308)
 
 **API Endpoints** (All under `/api/v1/presence`):
 ```
@@ -86,14 +86,14 @@ GET  /api/v1/presence/activity/:user_id   - Get user activities
 - Configurable thresholds and actions
 
 **Files Created**:
-- ✅ Models: `/app/go-backend/models/moderation.go`
-- ✅ Service: `/app/go-backend/services/moderation_service.go`
-- ✅ Handler: `/app/go-backend/handlers/moderation_handler.go`
+- ✅ Models: `/app/backend/models/moderation.go`
+- ✅ Service: `/app/backend/services/moderation_service.go`
+- ✅ Handler: `/app/backend/handlers/moderation_handler.go`
 
 **Files Modified**:
-- ✅ Routes: `/app/go-backend/routes/routes.go` (added moderation routes, lines 310-335)
-- ✅ Config: `/app/go-backend/config/config.go` (added Gemini API configuration)
-- ✅ Environment: `/app/go-backend/.env` (added GEMINI_API_KEY and MODERATION_ENABLED)
+- ✅ Routes: `/app/backend/routes/routes.go` (added moderation routes, lines 310-335)
+- ✅ Config: `/app/backend/config/config.go` (added Gemini API configuration)
+- ✅ Environment: `/app/backend/.env` (added GEMINI_API_KEY and MODERATION_ENABLED)
 
 **API Endpoints** (All under `/api/v1/moderation`):
 ```
@@ -150,19 +150,19 @@ MODERATION_ENABLED=true
 
 ### Option 1: Docker (Recommended)
 ```bash
-cd /app/go-backend
+cd /app/backend
 docker build -t pulse-control-plane .
 docker run -p 8001:8001 --env-file .env pulse-control-plane
 ```
 
 ### Option 2: Direct Binary (if Go is installed)
 ```bash
-cd /app/go-backend
+cd /app/backend
 go run main.go
 ```
 
 ### Option 3: Using compiled binary
-The binary at `/app/go-backend/pulse-control-plane` needs to be recompiled for the current architecture.
+The binary at `/app/backend/pulse-control-plane` needs to be recompiled for the current architecture.
 
 ---
 
@@ -173,8 +173,8 @@ The current supervisor configuration (`/etc/supervisor/conf.d/supervisord.conf`)
 
 ```ini
 [program:backend]
-command=/app/go-backend/pulse-control-plane
-directory=/app/go-backend
+command=/app/backend/pulse-control-plane
+directory=/app/backend
 autostart=true
 autorestart=true
 stderr_logfile=/var/log/supervisor/backend.err.log

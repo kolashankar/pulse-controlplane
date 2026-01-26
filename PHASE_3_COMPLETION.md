@@ -17,9 +17,9 @@ Phase 3 implemented the media control and scaling infrastructure for the Pulse C
 ### 1. Egress System (HLS Distribution)
 
 **Files Created:**
-- `/app/go-backend/models/egress.go` (135 lines)
-- `/app/go-backend/services/egress_service.go` (238 lines)
-- `/app/go-backend/handlers/egress_handler.go` (183 lines)
+- `/app/backend/models/egress.go` (135 lines)
+- `/app/backend/services/egress_service.go` (238 lines)
+- `/app/backend/handlers/egress_handler.go` (183 lines)
 
 **Features Implemented:**
 - ✅ Start egress for HLS streaming
@@ -61,9 +61,9 @@ GET    /v1/media/egress               ✅ Working (list with pagination)
 ### 2. Ingress System
 
 **Files Created:**
-- `/app/go-backend/models/ingress.go` (85 lines)
-- `/app/go-backend/services/ingress_service.go` (177 lines)
-- `/app/go-backend/handlers/ingress_handler.go` (147 lines)
+- `/app/backend/models/ingress.go` (85 lines)
+- `/app/backend/services/ingress_service.go` (177 lines)
+- `/app/backend/handlers/ingress_handler.go` (147 lines)
 
 **Features Implemented:**
 - ✅ Create ingress endpoints
@@ -99,7 +99,7 @@ DELETE /v1/media/ingress/:id          ✅ Working (soft delete)
 ### 3. CDN Service
 
 **Files Created:**
-- `/app/go-backend/services/cdn_service.go` (56 lines)
+- `/app/backend/services/cdn_service.go` (56 lines)
 
 **Features Implemented:**
 - ✅ Generate HLS playback URLs
@@ -128,10 +128,10 @@ ValidateStorageConfig(bucket, region, accessKey, secretKey string) error
 ### 4. Webhook System
 
 **Files Created:**
-- `/app/go-backend/models/webhook.go` (127 lines)
-- `/app/go-backend/services/webhook_service.go` (258 lines)
-- `/app/go-backend/handlers/webhook_handler.go` (209 lines)
-- `/app/go-backend/queue/retry_queue.go` (148 lines)
+- `/app/backend/models/webhook.go` (127 lines)
+- `/app/backend/services/webhook_service.go` (258 lines)
+- `/app/backend/handlers/webhook_handler.go` (209 lines)
+- `/app/backend/queue/retry_queue.go` (148 lines)
 
 **Features Implemented:**
 - ✅ Receive webhooks from LiveKit server
@@ -184,7 +184,7 @@ Final: Mark as failed if all attempts exhausted
 ### 5. Retry Queue System
 
 **Files Created:**
-- `/app/go-backend/queue/retry_queue.go` (148 lines)
+- `/app/backend/queue/retry_queue.go` (148 lines)
 
 **Features Implemented:**
 - ✅ Schedule webhook retries
@@ -209,9 +209,9 @@ GetStats() // Queue statistics
 ### 6. Models
 
 **Files Created:**
-- `/app/go-backend/models/egress.go` (135 lines)
-- `/app/go-backend/models/ingress.go` (85 lines)
-- `/app/go-backend/models/webhook.go` (127 lines)
+- `/app/backend/models/egress.go` (135 lines)
+- `/app/backend/models/ingress.go` (85 lines)
+- `/app/backend/models/webhook.go` (127 lines)
 
 **Models Implemented:**
 1. **Egress Model** - Complete egress configuration and state
@@ -231,7 +231,7 @@ GetStats() // Queue statistics
 ### 7. Routes Configuration
 
 **Files Updated:**
-- `/app/go-backend/routes/routes.go` (Updated with Phase 3 routes)
+- `/app/backend/routes/routes.go` (Updated with Phase 3 routes)
 
 **Routes Added:**
 ```go
@@ -262,7 +262,7 @@ webhooks.GET("/logs", middleware.AuthenticateProject(), webhookHandler.GetWebhoo
 ### 8. Utilities
 
 **Files Updated:**
-- `/app/go-backend/utils/crypto.go` (Added GenerateRandomString)
+- `/app/backend/utils/crypto.go` (Added GenerateRandomString)
 
 **New Functions:**
 ```go
@@ -274,7 +274,7 @@ GenerateRandomString(length int) string  // For stream keys, etc.
 ### 9. Middleware
 
 **Files Updated:**
-- `/app/go-backend/middleware/rate_limiter.go` (Added global rate limiter functions)
+- `/app/backend/middleware/rate_limiter.go` (Added global rate limiter functions)
 
 **New Functions:**
 ```go
@@ -365,7 +365,7 @@ ProjectRateLimiter() gin.HandlerFunc     // 1000 req/min per project
 
 ### Environment Variables Required
 
-Add to `/app/go-backend/.env`:
+Add to `/app/backend/.env`:
 
 ```bash
 # CDN & Storage (Phase 3)
@@ -385,7 +385,7 @@ WEBHOOK_SECRET=your-webhook-secret-key
 
 ```bash
 # Navigate to Go backend
-cd /app/go-backend
+cd /app/backend
 
 # Install dependencies (if needed)
 go mod tidy
@@ -400,14 +400,14 @@ ls -lh pulse-control-plane
 ./pulse-control-plane
 
 # Or use supervisor
-sudo supervisorctl restart go-backend
+sudo supervisorctl restart backend
 ```
 
 ### Verify Services
 
 ```bash
 # Check Go backend status
-sudo supervisorctl status go-backend
+sudo supervisorctl status backend
 
 # Test health endpoint
 curl http://localhost:8081/health

@@ -17,8 +17,8 @@ Phase 2 implemented the core Control Plane APIs for organization management, pro
 ### 1. Organization Management System
 
 **Files Created:**
-- `/app/go-backend/services/organization_service.go` (187 lines)
-- `/app/go-backend/handlers/organization_handler.go` (183 lines)
+- `/app/backend/services/organization_service.go` (187 lines)
+- `/app/backend/handlers/organization_handler.go` (183 lines)
 
 **Features Implemented:**
 - ✅ Create organization with unique email validation
@@ -49,8 +49,8 @@ DELETE /v1/organizations/:id          ✅ Working (soft delete)
 ### 2. Project Management System
 
 **Files Created:**
-- `/app/go-backend/services/project_service.go` (249 lines)
-- `/app/go-backend/handlers/project_handler.go` (233 lines)
+- `/app/backend/services/project_service.go` (249 lines)
+- `/app/backend/handlers/project_handler.go` (233 lines)
 
 **Features Implemented:**
 - ✅ Create project with automatic API key generation
@@ -92,8 +92,8 @@ POST   /v1/projects/:id/regenerate-keys ✅ Working (returns new keys)
 ### 3. Token Management System
 
 **Files Created:**
-- `/app/go-backend/services/token_service.go` (183 lines)
-- `/app/go-backend/handlers/token_handler.go` (109 lines)
+- `/app/backend/services/token_service.go` (183 lines)
+- `/app/backend/handlers/token_handler.go` (109 lines)
 
 **Features Implemented:**
 - ✅ Exchange Pulse API Key for LiveKit JWT token
@@ -146,7 +146,7 @@ POST   /v1/tokens/validate            ✅ Working
 ### 4. Rate Limiting System
 
 **Files Created:**
-- `/app/go-backend/middleware/rate_limiter.go` (134 lines)
+- `/app/backend/middleware/rate_limiter.go` (134 lines)
 
 **Features Implemented:**
 - ✅ IP-based rate limiting (global)
@@ -169,7 +169,7 @@ POST   /v1/tokens/validate            ✅ Working
 ### 5. Routes Configuration
 
 **Files Updated:**
-- `/app/go-backend/routes/routes.go` (Updated)
+- `/app/backend/routes/routes.go` (Updated)
 
 **Changes:**
 - ✅ Imported handler packages
@@ -273,24 +273,24 @@ github.com/golang-jwt/jwt/v5 v5.2.0  ✅ Added
 
 1. **Install Dependencies** (if not already done)
 ```bash
-cd /app/go-backend
+cd /app/backend
 go mod download
 ```
 
 2. **Compile the Application**
 ```bash
-cd /app/go-backend
+cd /app/backend
 go build -o pulse-control-plane .
 ```
 
 3. **Restart the Service**
 ```bash
-sudo supervisorctl restart go-backend
+sudo supervisorctl restart backend
 ```
 
 4. **Verify Service is Running**
 ```bash
-sudo supervisorctl status go-backend
+sudo supervisorctl status backend
 curl http://localhost:8081/health
 curl http://localhost:8081/v1/status
 ```

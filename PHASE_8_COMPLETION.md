@@ -25,7 +25,7 @@ Phase 8 introduces advanced features for multi-region support and comprehensive 
 #### Files Created:
 
 ```
-/app/go-backend/
+/app/backend/
 ├── models/
 │   └── region.go                    ✅ Created (170 lines)
 ├── services/
@@ -173,7 +173,7 @@ go regionService.RunHealthCheckLoop(ctx, 5*time.Minute)
 #### Files Created:
 
 ```
-/app/go-backend/
+/app/backend/
 ├── models/
 │   └── analytics.go                 ✅ Created (156 lines)
 ├── services/
@@ -931,7 +931,7 @@ Get usage forecast.
 
 1. **Compile Go Backend:**
    ```bash
-   cd /app/go-backend
+   cd /app/backend
    go mod tidy
    go build -o pulse-control-plane .
    ```
@@ -960,7 +960,7 @@ Get usage forecast.
 
 6. **Restart Services:**
    ```bash
-   sudo supervisorctl restart go-backend
+   sudo supervisorctl restart backend
    sudo supervisorctl restart frontend
    ```
 

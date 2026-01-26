@@ -17,8 +17,8 @@ Phase 7 implemented comprehensive security hardening, testing infrastructure, co
 ### 1. Security Hardening
 
 #### Files Created:
-- `/app/go-backend/middleware/security.go` ✅ (178 lines)
-- `/app/go-backend/middleware/webhook_verification.go` ✅ (66 lines)
+- `/app/backend/middleware/security.go` ✅ (178 lines)
+- `/app/backend/middleware/webhook_verification.go` ✅ (66 lines)
 
 #### Security Features Implemented:
 
@@ -69,13 +69,13 @@ Phase 7 implemented comprehensive security hardening, testing infrastructure, co
 ### 2. Testing Infrastructure
 
 #### Files Created:
-- `/app/go-backend/tests/handlers_test.go` ✅ (200+ lines)
-- `/app/go-backend/tests/services_test.go` ✅ (250+ lines)
-- `/app/go-backend/tests/integration_test.go` ✅ (350+ lines)
-- `/app/go-backend/tests/load_test.js` ✅ (150+ lines)
-- `/app/go-backend/tests/spike_test.js` ✅ (80+ lines)
-- `/app/go-backend/tests/soak_test.js` ✅ (80+ lines)
-- `/app/go-backend/tests/README_LOAD_TESTING.md` ✅ (400+ lines)
+- `/app/backend/tests/handlers_test.go` ✅ (200+ lines)
+- `/app/backend/tests/services_test.go` ✅ (250+ lines)
+- `/app/backend/tests/integration_test.go` ✅ (350+ lines)
+- `/app/backend/tests/load_test.js` ✅ (150+ lines)
+- `/app/backend/tests/spike_test.js` ✅ (80+ lines)
+- `/app/backend/tests/soak_test.js` ✅ (80+ lines)
+- `/app/backend/tests/README_LOAD_TESTING.md` ✅ (400+ lines)
 
 #### Unit Tests:
 
@@ -278,7 +278,7 @@ Phase 7 implemented comprehensive security hardening, testing infrastructure, co
 ### 4. Production Deployment
 
 #### Files Created:
-- `/app/go-backend/Dockerfile` ✅ (Multi-stage build)
+- `/app/backend/Dockerfile` ✅ (Multi-stage build)
 - `/app/frontend/Dockerfile` ✅ (Production build)
 - `/app/docker-compose.yml` ✅ (Full stack)
 - `/app/supervisor.conf` ✅ (Process management)
@@ -333,7 +333,7 @@ Flags: -ldflags="-w -s" (strip debug info)
 #### Supervisor Configuration:
 
 **Programs:**
-1. go-backend (auto-restart, logging)
+1. backend (auto-restart, logging)
 2. frontend (auto-restart, logging)
 
 **Features:**
@@ -730,13 +730,13 @@ k6 run -e BASE_URL=https://api.pulse.io \
 - [Scaling Guide](/app/docs/SCALING.md)
 
 ### Code:
-- [Security Middleware](/app/go-backend/middleware/security.go)
-- [Webhook Verification](/app/go-backend/middleware/webhook_verification.go)
-- [Unit Tests](/app/go-backend/tests/)
-- [Load Tests](/app/go-backend/tests/)
+- [Security Middleware](/app/backend/middleware/security.go)
+- [Webhook Verification](/app/backend/middleware/webhook_verification.go)
+- [Unit Tests](/app/backend/tests/)
+- [Load Tests](/app/backend/tests/)
 
 ### Deployment:
-- [Backend Dockerfile](/app/go-backend/Dockerfile)
+- [Backend Dockerfile](/app/backend/Dockerfile)
 - [Frontend Dockerfile](/app/frontend/Dockerfile)
 - [Docker Compose](/app/docker-compose.yml)
 - [Supervisor Config](/app/supervisor.conf)

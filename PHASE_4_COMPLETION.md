@@ -17,11 +17,11 @@ Phase 4 implemented comprehensive usage tracking and billing infrastructure for 
 ### 1. Usage Metrics Collection System
 
 **Files Created:**
-- `/app/go-backend/models/usage_aggregate.go` (115 lines)
-- `/app/go-backend/services/usage_service.go` (365 lines)
-- `/app/go-backend/services/aggregator_service.go` (320 lines)
-- `/app/go-backend/handlers/usage_handler.go` (220 lines)
-- `/app/go-backend/workers/usage_aggregator.go` (135 lines)
+- `/app/backend/models/usage_aggregate.go` (115 lines)
+- `/app/backend/services/usage_service.go` (365 lines)
+- `/app/backend/services/aggregator_service.go` (320 lines)
+- `/app/backend/handlers/usage_handler.go` (220 lines)
+- `/app/backend/workers/usage_aggregator.go` (135 lines)
 
 **Features Implemented:**
 - ✅ Real-time usage tracking from webhook events
@@ -114,9 +114,9 @@ BasePrice: $299/month
 ### 3. Billing System
 
 **Files Created:**
-- `/app/go-backend/models/billing.go` (145 lines)
-- `/app/go-backend/services/billing_service.go` (285 lines)
-- `/app/go-backend/handlers/billing_handler.go` (185 lines)
+- `/app/backend/models/billing.go` (145 lines)
+- `/app/backend/services/billing_service.go` (285 lines)
+- `/app/backend/handlers/billing_handler.go` (185 lines)
 
 **Features Implemented:**
 - ✅ Cost calculation based on usage
@@ -190,7 +190,7 @@ Total: $339.50
 ### 5. Background Worker
 
 **Files Created:**
-- `/app/go-backend/workers/usage_aggregator.go` (135 lines)
+- `/app/backend/workers/usage_aggregator.go` (135 lines)
 
 **Features:**
 - ✅ Automatic hourly aggregation (every hour)
